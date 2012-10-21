@@ -31,8 +31,13 @@ def onerror(function, path, excinfo):
 
 BASE = os.environ.get("BASE")
 if BASE is None:
-    print("Failed to find Jenkins base directory, exiting")
-    sys.exit(1)
+    print("Failed to find Jenkins base directory, trying $HOME/jenkins")
+    HOME = os.environ.get("HOME")
+    if HOME is None:
+        print("HOME environment variable is not set")
+        sys.exit(1)
+    BASE=os.path.join(HOME,"jenkins")
+
 if not os.path.isdir(BASE):
     print(BASE, "does not appear to be a directory")
     sys.exit(1)
@@ -45,6 +50,6 @@ if not os.path.isdir("workspace"):
     sys.exit(1)
 
 print("Deleting directory 'workspace' in", BASE)
-shutil.rmtree("workspace",onerror)
+shutil.rmtree("workspace",onerror=onerror)
 print("Completed")
 sys.exit(0)
