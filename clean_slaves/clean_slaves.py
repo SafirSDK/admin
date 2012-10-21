@@ -24,7 +24,10 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, sys
+import os, sys, shutil
+
+def onerror(function, path, excinfo):
+    print("Failed to delete",path, ":", excinfo)
 
 BASE = os.environ.get("BASE")
 if BASE is None:
@@ -37,3 +40,11 @@ print("Changing directory to", BASE)
 os.chdir(BASE)
 contents = os.listdir(".")
 print (contents)
+if not os.path.isdir("workspace"):
+    print("Could not find 'workspace' dir in", BASE)
+    sys.exit(1)
+
+print("Deleting directory 'workspace' in", BASE)
+shutil.rmtree("workspace",onerror)
+print("Completed")
+sys.exit(0)
