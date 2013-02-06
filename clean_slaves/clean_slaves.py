@@ -38,7 +38,7 @@ def onerror(function, path, excinfo):
 
     #hmm, maybe the path is very long and we're on windows
     if sys.platform == "win32":
-        newpath = "\\\\?\\" + os.path.abspath(path)
+        newpath = "\\\\?\\" + os.path.join(os.getcwd(),path)
         print("Will try to delete",newpath)
 
     print("Failed to delete",path, ":", excinfo)
