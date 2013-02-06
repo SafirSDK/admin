@@ -57,7 +57,7 @@ if not os.path.isdir("workspace"):
 
 print("Deleting directory 'workspace' in", BASE)
 #shutil.rmtree("workspace",onerror=onerror)
-for root, dirs, files in os.walk(top, topdown=False):
+for root, dirs, files in os.walk("workspace", topdown=False):
     for name in files:
         filename = os.path.join(root, name)
         os.chmod(filename, stat.S_IWRITE)
