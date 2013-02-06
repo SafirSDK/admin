@@ -26,14 +26,49 @@
 from __future__ import print_function
 import os, sys, shutil, stat
 
+def splitpath(path):
+    folders=[]
+    while 1:
+        path,folder=os.path.split(path)
+
+        if folder!="":
+            folders.append(folder)
+        else:
+            if path!="":
+                folders.append(path)
+            break
+
+    folders.reverse()
+
+    return folders
+
 def onerror(function, path, excinfo):
     try:
         # path contains the path of the file that couldn't be removed
         # let's just assume that it's read-only and unlink it.
         os.chmod( path, stat.S_IWRITE )
         os.unlink( path )
+        return
     except:
-        print("Failed to delete",path, ":", excinfo)
+        pass
+
+    #hmm, maybe the path is very long, try to move into the path before deleting
+    olddir = os.getcwd()
+    try:
+        for d in splitpath(path):
+            if os.path.is_file(d):
+                print("Would like to remove",d)
+#                os.chmod(d, stat.S_IWRITE)
+#                os.unlink(d)
+            else:
+                print("Entering",d)
+                os.chdir(d)
+        return
+    except:
+        pass
+    finally:
+        os.chdir(olddir)
+    print("Failed to delete",path, ":", excinfo)
 
 BASE = os.environ.get("BASE")
 if BASE is None:
@@ -63,6 +98,6 @@ shutil.rmtree("workspace",onerror=onerror)
 #        os.chmod(filename, stat.S_IWRITE)
 #        os.remove(filename)
 #    for name in dirs:
-#        os.rmdir(os.path.join(root, name))
+#b        os.rmdir(os.path.join(root, name))
 print("Completed")
 sys.exit(0)
