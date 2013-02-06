@@ -24,7 +24,7 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, sys, shutil
+import os, sys, shutil, stat
 
 def onerror(function, path, excinfo):
     try:
