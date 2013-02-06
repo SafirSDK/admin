@@ -26,22 +26,6 @@
 from __future__ import print_function
 import os, sys, shutil, stat
 
-def splitpath(path):
-    folders=[]
-    while 1:
-        path,folder=os.path.split(path)
-
-        if folder!="":
-            folders.append(folder)
-        else:
-            if path!="":
-                folders.append(path)
-            break
-
-    folders.reverse()
-
-    return folders
-
 def onerror(function, path, excinfo):
     try:
         # path contains the path of the file that couldn't be removed
@@ -52,25 +36,10 @@ def onerror(function, path, excinfo):
     except:
         pass
 
-    #hmm, maybe the path is very long, try to move into the path before deleting
-    olddir = os.getcwd()
-    try:
-        for d in splitpath(path):
-            print("processing",d)
-            if os.path.isdir(d):
-                print("Entering",d)
-                os.chdir(d)
-            else:
-                print("Will remove",d)
-                os.chmod(d, stat.S_IWRITE)
-                os.unlink(d)
-
-        return
-    except Exception as e:
-        print(e)
-    finally:
-        os.chdir(olddir)
-    print("Failed to delete",path, ":", excinfo)
+    #hmm, maybe the path is very long and we're on windows
+    if sys.platform == "win32":
+        newpath = os.path.join("\\\\?\\",os.path.abspath(path))
+        print("Will try to delete",newpath)
 
 BASE = os.environ.get("BASE")
 if BASE is None:
