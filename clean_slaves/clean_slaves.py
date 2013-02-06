@@ -27,7 +27,13 @@ from __future__ import print_function
 import os, sys, shutil
 
 def onerror(function, path, excinfo):
-    print("Failed to delete",path, ":", excinfo)
+    try:
+        # path contains the path of the file that couldn't be removed
+        # let's just assume that it's read-only and unlink it.
+        os.chmod( path, stat.S_IWRITE )
+        os.unlink( path )
+    except:
+        print("Failed to delete",path, ":", excinfo)
 
 BASE = os.environ.get("BASE")
 if BASE is None:
