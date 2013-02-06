@@ -57,7 +57,7 @@ def onerror(function, path, excinfo):
     try:
         for d in splitpath(path):
             print("processing",d)
-            if os.path.is_file(d):
+            if os.path.isfile(d):
                 print("Would like to remove",d)
                 #                os.chmod(d, stat.S_IWRITE)
                 #                os.unlink(d)
