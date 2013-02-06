@@ -56,16 +56,17 @@ def onerror(function, path, excinfo):
     olddir = os.getcwd()
     try:
         for d in splitpath(path):
+            print("processing",d)
             if os.path.is_file(d):
                 print("Would like to remove",d)
-#                os.chmod(d, stat.S_IWRITE)
-#                os.unlink(d)
+                #                os.chmod(d, stat.S_IWRITE)
+                #                os.unlink(d)
             else:
                 print("Entering",d)
                 os.chdir(d)
         return
-    except:
-        pass
+    except Exception as e:
+        print(e)
     finally:
         os.chdir(olddir)
     print("Failed to delete",path, ":", excinfo)
