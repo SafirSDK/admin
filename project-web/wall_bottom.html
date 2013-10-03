@@ -1,6 +1,10 @@
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
+<html>
+<head>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="10" > 
+</head>
+<body>
 <table style="text-align: left;" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
@@ -52,14 +56,12 @@
 <br>
 <br>
 
-      <script>
-        $.getJSON( "https://api.bitcoinaverage.com/ticker/USD")
-          .done(function( json ) {
-          $.each( json, function( key, val ) {
-            console.log( "JSON Data: "  + key + " " + val );
-          })
-          document.getElementById("btcprice").innerHTML="$" + json.last;
-        });
-      </script>
-
+<script>
+  $.getJSON( "https://api.bitcoinaverage.com/ticker/USD")
+  .done(function( json ) {
+    document.getElementById("btcprice").innerHTML="$ " + json["last"];
+  });
+</script>
+</body>
+</html>
 
