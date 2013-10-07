@@ -2,7 +2,6 @@
 <head>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="120" > 
 </head>
 <body>
 <table style="text-align: left;" cellpadding="0" cellspacing="0" width="100%" height="100%">
@@ -25,19 +24,19 @@
                 Test<br>
               </th>
               <td style="vertical-align: top;">
-                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300" width="450" height="300" >
+                <img id="standalone_test_img" alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300" width="450" height="300" >
               </td>
               <td style="vertical-align: top;">
-                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true" width="450" height="300">
+                <img id="standalone_test_fail_img" alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true" width="450" height="300">
               </td>
             </tr>
             <tr align="center">
               <th style="vertical-align: middle;">Multinode<br>Test</th>
               <td style="vertical-align: top;">
-                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300" width="450" height="300">
+                <img id="multinode_test_img" alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300" width="450" height="300">
               </td>
               <td style="vertical-align: top;">
-                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true" width="450" height="300">
+                <img id="multinode_test_fail_img" alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true" width="450" height="300">
               </td>
             </tr>
           </tbody>
@@ -100,34 +99,90 @@
 
       </td>
     </tr>
+    <tr>
+      <td width="100%" align="center" valign="center">
+        <table style="text-align: left; background-color: #EEEEEE;" cellpadding="2" cellspacing="2" width="100%" height="100%">
+          <tbody>
+            <tr>
+              <td width="50%" align="center" valign="center">
+                <span style="font-size:22px; font-family: Courier;">Stockholm:&nbsp;<span id="rt_clock_local" style="font-family: Courier;"></span></span>
+              </td>
+              <td width="50%" align="center" valign="center">
+                <span style="font-size:22px; font-family: Courier;">UTC:&nbsp;<span id="rt_clock_utc" style="font-family: Courier;"></span></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>    
   </tbody>
 </table>
 <br>
 <br>
 
 <script>
-  $.getJSON( "https://api.bitcoinaverage.com/ticker/USD", function( json ) {
-    var last = json["last"].toFixed(2);
-    var ask = json["ask"].toFixed(2);
-    var bid = json["bid"].toFixed(2);
-    var a24h = json["24h_avg"].toFixed(2);
-    var vol = json["total_vol"].toFixed(2);
+  $(document).ready(function(){
+    refreshBitcoin(true, 120000); // 2 minutes
+    refreshTestTrends(true, 600000); // 10 minutes
+    refreshRealtimeClock(true, 1000); // 1 second
+  }); 
 
-    if (last >= a24h) {
-      // Up trend
-      $("#btc_last_price").css("color", "blue");
-    } else {
-      $("#btc_last_price").css("color", "red");
+  function refreshBitcoin(repeat, repeatInterval) { 
+    $.getJSON( "https://api.bitcoinaverage.com/ticker/USD", function( json ) {
+      var last = json["last"].toFixed(2);
+      var ask = json["ask"].toFixed(2);
+      var bid = json["bid"].toFixed(2);
+      var a24h = json["24h_avg"].toFixed(2);
+      var vol = json["total_vol"].toFixed(2);
+
+      if (last >= a24h) {
+        // Up trend
+        $("#btc_last_price").css("color", "blue");
+      } else {
+        $("#btc_last_price").css("color", "red");
+      }
+
+      document.getElementById("btc_last_price").innerHTML="$ " + last;
+      document.getElementById("btc_ask_price").innerHTML="$ " + ask;
+      document.getElementById("btc_bid_price").innerHTML="$ " + bid;
+      document.getElementById("btc_24h_price").innerHTML="$ " + a24h;
+      document.getElementById("btc_vol").innerHTML="" + vol;
+      $("#btc_data").show();
+    });
+
+    if (repeat) {
+      setInterval(refreshBitcoin, repeatInterval);         
     }
+  }
 
-    document.getElementById("btc_last_price").innerHTML="$ " + last;
-    document.getElementById("btc_ask_price").innerHTML="$ " + ask;
-    document.getElementById("btc_bid_price").innerHTML="$ " + bid;
-    document.getElementById("btc_24h_price").innerHTML="$ " + a24h;
-    document.getElementById("btc_vol").innerHTML="" + vol;
-    $("#btc_data").show();
-    //document.getElementById("btc_data").display = "block";
-  });
+  function refreshTestTrends(repeat, repeatInterval) { 
+    // trick to force picture refresh
+    var x = new Date();
+    var xtime =  x.getTime();
+
+    $("#standalone_test_img").attr("src", "https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&height=300&dummy=" + xtime);
+    $("#standalone_test_fail_img").attr("src", "https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&height=300&failureOnly=true&dummy=" + xtime);
+    $("#multinode_test_img").attr("src", "https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&height=300&dummy=" + xtime);
+    $("#multinode_test_fail_img").attr("src", "https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&height=300&failureOnly=true&dummy=" + xtime);
+
+    if (repeat) {
+      setInterval(refreshTestTrends, repeatInterval);         
+    }
+  }
+
+  function refreshRealtimeClock(repeat, repeatInterval) {
+    //var strcount;
+    var x = new Date();
+    //var x1 = x.toUTCString();// changing the display to UTC string
+    document.getElementById('rt_clock_local').innerHTML = x.toLocaleString();
+    document.getElementById('rt_clock_utc').innerHTML = x.toUTCString();
+    //tt=display_c();
+
+    if (repeat) {
+      setInterval(refreshRealtimeClock, repeatInterval);         
+    }
+  }
+
 </script>
 </body>
 </html>
