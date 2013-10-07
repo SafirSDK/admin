@@ -59,13 +59,33 @@
               </td>
               <td>
                 <span id="btc_data" style="display: none;">
-                  <span style="font-size:100px;" id="btc_last_price">Failed to load</span><br>
-                  <span style="font-size:20px; vertical-align: top;">
-                    Ask: <span id="btc_ask_price">Failed to load</span>
-                    &nbsp;&nbsp;Bid: <span id="btc_bid_price">Failed to load</span>
-                    &nbsp;&nbsp;24h average: <span id="btc_24h_price">Failed to load</span>
-                    &nbsp;&nbsp;24h volume: <span id="btc_vol">Failed to load</span>
-                  </span>
+                  <table height="100%">
+                    <tbody>
+                      <tr>
+                        <td align="center" colspan="7" height="100">
+                          <span style="font-size:90px;" id="btc_last_price">Failed to load</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="5%">&nbsp;</td>
+                        <td nowrap><span style="font-size:20px; vertical-align: top;">Ask:&nbsp;</span></td>
+                        <td nowrap align="right"><span style="font-size:20px; vertical-align: top;" id="btc_ask_price">Failed to load</span></td>
+                        <td nowrap><span style="font-size:20px; vertical-align: top;">&nbsp;&nbsp;&nbsp;Bid:</span></td>
+                        <td nowrap align="right"><span style="font-size:20px; vertical-align: top;" id="btc_bid_price">Failed to load</span></td>
+                        <td>&nbsp;</td>
+                        <td width="5%">&nbsp;</td>
+                      </tr>
+                      <tr>
+                        <td width="5%">&nbsp;</td>
+                        <td nowrap><span style="font-size:20px; vertical-align: top;">24h average:&nbsp;</span></td>
+                        <td nowrap align="right"><span style="font-size:20px; vertical-align: top;" id="btc_24h_price">Failed to load</span></td>
+                        <td nowrap><span style="font-size:20px; vertical-align: top;">&nbsp;&nbsp;&nbsp;24h volume:</span></td>
+                        <td nowrap align="right"><span style="font-size:20px; vertical-align: top;" id="btc_vol">Failed to load</span></td>
+                        <td nowrap align="left"><span style="font-size:20px; vertical-align: top;">&nbsp;BTC</span></td>
+                        <td width="5%">&nbsp;</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </span>
               </td>
               <td>
@@ -104,7 +124,7 @@
     document.getElementById("btc_ask_price").innerHTML="$ " + ask;
     document.getElementById("btc_bid_price").innerHTML="$ " + bid;
     document.getElementById("btc_24h_price").innerHTML="$ " + a24h;
-    document.getElementById("btc_vol").innerHTML="<img src=\"Bitcoin-sign-20110719.png\" height=\"18\" style=\"vertical-align: text-top; margin: auto;\"> " + vol;
+    document.getElementById("btc_vol").innerHTML="" + vol;
     $("#btc_data").show();
     //document.getElementById("btc_data").display = "block";
   });
