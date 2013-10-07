@@ -1,65 +1,112 @@
 <html>
 <head>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <meta charset="utf-8">
   <meta http-equiv="refresh" content="120" > 
 </head>
 <body>
-<table style="text-align: left;" cellpadding="2" cellspacing="2">
+<table style="text-align: left;" cellpadding="0" cellspacing="0" width="100%" height="100%">
   <tbody>
     <tr>
-      <td style="vertical-align: top;"><br>
+      <td align="center" valign="center">
+
+        <table style="text-align: left;" cellpadding="2" cellspacing="2">
+          <tbody>
+            <tr align="center">
+              <td style="vertical-align: top;"><br>
+              </td>
+              <th style="vertical-align: top; text-align: center;">Success and Failures<br>
+              </th>
+              <th style="vertical-align: top; text-align: center;">Failures<br>
+              </th>
+            </tr>
+            <tr align="center">
+              <th style="vertical-align: middle;">Standalone<br>
+                Test<br>
+              </th>
+              <td style="vertical-align: top;">
+                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300" width="450" height="300" >
+              </td>
+              <td style="vertical-align: top;">
+                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true" width="450" height="300">
+              </td>
+            </tr>
+            <tr align="center">
+              <th style="vertical-align: middle;">Multinode<br>Test</th>
+              <td style="vertical-align: top;">
+                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300" width="450" height="300">
+              </td>
+              <td style="vertical-align: top;">
+                <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true" width="450" height="300">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
       </td>
-      <th style="vertical-align: top; text-align: center;">Success and Failures<br>
-      </th>
-      <th style="vertical-align: top; text-align: center;">Failures<br>
-      </th>
     </tr>
     <tr>
-      <th style="vertical-align: middle;">Standalone<br>
-        Test<br>
-      </th>
-      <td style="vertical-align: top;">
-        <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300">
-      </td>
-      <td style="vertical-align: top;">
-        <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Standalone%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true">
-      </td>
-    </tr>
-    <tr>
-      <th style="vertical-align: middle;">Multinode<br>Test</th>
-      <td style="vertical-align: top;">
-        <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300">
-      </td>
-      <td style="vertical-align: top;">
-        <img alt="Standalone Test Status" src="https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&amp;height=300&amp;failureOnly=true">
+      <td width="100%" align="center" valign="center">
+
+        <table style="text-align: left;" cellpadding="2" cellspacing="2" width="100%" height="100%">
+          <tbody>
+            <tr>
+              <td height="100%">&nbsp;</td>
+            </tr>
+            <tr align="center" valign="center">
+              <td height="174">
+                <img src="https://btcticker.appspot.com/images/bitcoin.png" width="175" height="174"/>
+              </td>
+              <td>
+                <span id="btc_data" style="display: none;">
+                  <span style="font-size:100px;" id="btc_last_price">Failed to load</span><br>
+                  <span style="font-size:20px; vertical-align: top;">
+                    Ask: <span id="btc_ask_price">Failed to load</span>
+                    &nbsp;&nbsp;Bid: <span id="btc_bid_price">Failed to load</span>
+                    &nbsp;&nbsp;24h average: <span id="btc_24h_price">Failed to load</span>
+                    &nbsp;&nbsp;24h volume: <span id="btc_vol">Failed to load</span>
+                  </span>
+                </span>
+              </td>
+              <td>
+                <img src="https://btcticker.appspot.com/images/bitcoin.png" width="175" height="174"/>
+              </td>
+            </tr>
+            <tr>
+              <td height="100%">&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+
       </td>
     </tr>
   </tbody>
-</table>
-
-<table style="text-align: left;" cellpadding="2" cellspacing="2" width="100%">
-  <tbody>
-    <tr>
-      <td>
-        <img src="https://btcticker.appspot.com/images/bitcoin.png" width="175" height="174"/>
-      </td>
-      <td>
-        <span style="font-size:100px" id="btcprice">Failed to load</span>
-      </td>
-      <td>
-        <img src="https://btcticker.appspot.com/images/bitcoin.png" width="175" height="174"/>
-      </td>
-    </tr>
-  <tbody>
 </table>
 <br>
 <br>
 
 <script>
-  $.getJSON( "https://api.bitcoinaverage.com/ticker/USD")
-  .done(function( json ) {
-    document.getElementById("btcprice").innerHTML="$ " + json["last"];
+  $.getJSON( "https://api.bitcoinaverage.com/ticker/USD", function( json ) {
+    var last = json["last"].toFixed(2);
+    var ask = json["ask"].toFixed(2);
+    var bid = json["bid"].toFixed(2);
+    var a24h = json["24h_avg"].toFixed(2);
+    var vol = json["total_vol"].toFixed(2);
+
+    if (last >= a24h) {
+      // Up trend
+      $("#btc_last_price").css("color", "blue");
+    } else {
+      $("#btc_last_price").css("color", "red");
+    }
+
+    document.getElementById("btc_last_price").innerHTML="$ " + last;
+    document.getElementById("btc_ask_price").innerHTML="$ " + ask;
+    document.getElementById("btc_bid_price").innerHTML="$ " + bid;
+    document.getElementById("btc_24h_price").innerHTML="$ " + a24h;
+    document.getElementById("btc_vol").innerHTML="<img src=\"Bitcoin-sign-20110719.png\" height=\"18\" style=\"vertical-align: text-top; margin: auto;\"> " + vol;
+    $("#btc_data").show();
+    //document.getElementById("btc_data").display = "block";
   });
 </script>
 </body>
