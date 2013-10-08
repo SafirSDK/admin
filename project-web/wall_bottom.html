@@ -104,11 +104,16 @@
         <table style="text-align: left; background-color: #EEEEEE;" cellpadding="2" cellspacing="2" width="100%" height="100%">
           <tbody>
             <tr>
-              <td width="50%" align="center" valign="center">
-                <span style="font-size:22px; font-family: Courier;">Stockholm:&nbsp;<span id="rt_clock_local" style="font-family: Courier;"></span></span>
+              <td width="20%" align="right" valign="center">
+                <span style="font-size:24px; font-family: Courier;">Stockholm:&nbsp;</span><br>
+                <span style="font-size:24px; font-family: Courier;">UTC:&nbsp;</span>
               </td>
-              <td width="50%" align="center" valign="center">
-                <span style="font-size:22px; font-family: Courier;">UTC:&nbsp;<span id="rt_clock_utc" style="font-family: Courier;"></span></span>
+              <td width="55%" align="left" valign="center">
+                <span style="font-size:24px; font-family: Courier;" id="rt_datetime_local"></span><br>
+                <span style="font-size:24px; font-family: Courier;" id="rt_datetime_utc"></span>
+              </td>
+              <td width="25%" align="center" valign="center">
+                <span style="font-size:56px; font-family: Courier;"><span id="rt_clock_local" style="font-family: Courier;"></span></span>
               </td>
             </tr>
           </tbody>
@@ -122,12 +127,14 @@
 
 <script>
   $(document).ready(function(){
-    refreshBitcoin(true, 120000); // 2 minutes
-    refreshTestTrends(true, 600000); // 10 minutes
-    refreshRealtimeClock(true, 1000); // 1 second
+    refreshRealtimeClock();
+    refreshBitcoin();
+    setInterval(refreshBitcoin, 120000); // 2 minutes
+    setInterval(refreshTestTrends, 900000); // 15 minutes
+    setInterval(refreshRealtimeClock, 15000); // 15 second
   }); 
 
-  function refreshBitcoin(repeat, repeatInterval) { 
+  function refreshBitcoin() { 
     $.getJSON( "https://api.bitcoinaverage.com/ticker/USD", function( json ) {
       var last = json["last"].toFixed(2);
       var ask = json["ask"].toFixed(2);
@@ -149,13 +156,9 @@
       document.getElementById("btc_vol").innerHTML="" + vol;
       $("#btc_data").show();
     });
-
-    if (repeat) {
-      setInterval(refreshBitcoin, repeatInterval);         
-    }
   }
 
-  function refreshTestTrends(repeat, repeatInterval) { 
+  function refreshTestTrends() { 
     // trick to force picture refresh
     var x = new Date();
     var xtime =  x.getTime();
@@ -165,22 +168,18 @@
     $("#multinode_test_img").attr("src", "https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&height=300&dummy=" + xtime);
     $("#multinode_test_fail_img").attr("src", "https://projekt.consoden.se/safir/job/Multinode%20Test/test/trend?width=450&height=300&failureOnly=true&dummy=" + xtime);
 
-    if (repeat) {
-      setInterval(refreshTestTrends, repeatInterval);         
-    }
   }
 
-  function refreshRealtimeClock(repeat, repeatInterval) {
-    //var strcount;
-    var x = new Date();
-    //var x1 = x.toUTCString();// changing the display to UTC string
-    document.getElementById('rt_clock_local').innerHTML = x.toLocaleString();
-    document.getElementById('rt_clock_utc').innerHTML = x.toUTCString();
-    //tt=display_c();
+  function refreshRealtimeClock() {
 
-    if (repeat) {
-      setInterval(refreshRealtimeClock, repeatInterval);         
-    }
+    var x = new Date();
+    var utc_date = new Date();
+    utc_date.setHours(utc_date.getHours() + (utc_date.getTimezoneOffset()/60));
+
+    document.getElementById('rt_datetime_local').innerHTML = x.toLocaleFormat("%Y-%m-%d %H:%M %Z (%a w%W)");
+    document.getElementById('rt_datetime_utc').innerHTML = utc_date.toLocaleFormat("%Y-%m-%d %H:%M");
+    document.getElementById('rt_clock_local').innerHTML = x.toLocaleFormat("%H:%M");
+
   }
 
 </script>
