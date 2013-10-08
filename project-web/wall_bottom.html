@@ -108,11 +108,14 @@
                 <span style="font-size:24px; font-family: Courier;">Stockholm:&nbsp;</span><br>
                 <span style="font-size:24px; font-family: Courier;">UTC:&nbsp;</span>
               </td>
-              <td width="55%" align="left" valign="center">
+              <td width="40%" align="left" valign="center">
                 <span style="font-size:24px; font-family: Courier;" id="rt_datetime_local"></span><br>
                 <span style="font-size:24px; font-family: Courier;" id="rt_datetime_utc"></span>
               </td>
-              <td width="25%" align="center" valign="center">
+              <td width="20%" align="center" valign="center">
+                <span style="font-size:24px; font-family: Courier;"><span id="rt_day"></span><br><span id="rt_week"></span></span>
+              </td>
+              <td width="20%" align="center" valign="center">
                 <span style="font-size:56px; font-family: Courier;"><span id="rt_clock_local" style="font-family: Courier;"></span></span>
               </td>
             </tr>
@@ -170,15 +173,76 @@
 
   }
 
+  function zeroFill( number, width )
+  {
+    width -= number.toString().length;
+    if ( width > 0 )
+    {
+      return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+    }
+    return number + ""; // always return a string
+  }
+
+  function getDateStr(date_obj) {
+    return date_obj.getFullYear() + "-" + zeroFill(date_obj.getMonth(), 2) + "-" + zeroFill(date_obj.getDate(), 2);
+  }
+
+  function getTimeStr(date_obj) {
+    return zeroFill(date_obj.getHours(), 2) + ":" + zeroFill(date_obj.getMinutes(), 2);
+  }
+
+  function getDayStr(date_obj) {
+    // Engelsk datumordning..
+    var dates = Array("söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag");
+    return dates[date_obj.getDay()];
+  }
+
+/**
+* Returns the week number for this date. dowOffset is the day of week the week
+* "starts" on for your locale - it can be from 0 to 6. If dowOffset is 1 (Monday),
+* the week returned is the ISO 8601 week number.
+* @param int dowOffset
+* @return int
+*/
+Date.prototype.getWeek = function (dowOffset) {
+/*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.epoch-calendar.com */
+
+dowOffset = typeof(dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
+var newYear = new Date(this.getFullYear(),0,1);
+var day = newYear.getDay() - dowOffset; //the day of week the year begins on
+day = (day >= 0 ? day : day + 7);
+var daynum = Math.floor((this.getTime() - newYear.getTime() -
+(this.getTimezoneOffset()-newYear.getTimezoneOffset())*60000)/86400000) + 1;
+var weeknum;
+//if the year starts before the middle of a week
+if(day < 4) {
+weeknum = Math.floor((daynum+day-1)/7) + 1;
+if(weeknum > 52) {
+nYear = new Date(this.getFullYear() + 1,0,1);
+nday = nYear.getDay() - dowOffset;
+nday = nday >= 0 ? nday : nday + 7;
+/*if the next year starts before the middle of
+the week, it is week #1 of that year*/
+weeknum = nday < 4 ? 1 : 53;
+}
+}
+else {
+weeknum = Math.floor((daynum+day-1)/7);
+}
+return weeknum;
+};
   function refreshRealtimeClock() {
 
     var x = new Date();
     var utc_date = new Date();
-    utc_date.setHours(utc_date.getHours() + (utc_date.getTimezoneOffset()/60));
+    var offset = utc_date.getTimezoneOffset()/60;
+    utc_date.setHours(utc_date.getHours() + offset);
 
-    document.getElementById('rt_datetime_local').innerHTML = x.toLocaleFormat("%Y-%m-%d %H:%M %Z (%a w%W)");
-    document.getElementById('rt_datetime_utc').innerHTML = utc_date.toLocaleFormat("%Y-%m-%d %H:%M");
-    document.getElementById('rt_clock_local').innerHTML = x.toLocaleFormat("%H:%M");
+    document.getElementById('rt_datetime_local').innerHTML = getDateStr(x) + " " + getTimeStr(x) + " (GMT+" + (-offset) + "h)";
+    document.getElementById('rt_datetime_utc').innerHTML = getDateStr(utc_date) + " " + getTimeStr(utc_date);
+    document.getElementById('rt_day').innerHTML = getDayStr(x);
+    document.getElementById('rt_week').innerHTML = "v" + x.getWeek();
+    document.getElementById('rt_clock_local').innerHTML = getTimeStr(x);
 
   }
 
