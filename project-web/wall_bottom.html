@@ -2,6 +2,7 @@
 <head>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <meta charset="utf-8">
+  <meta http-equiv="refresh" content="3600"> <!-- reload whole page every hour due to memory leak in web browser on raspberry Pi -->  
 </head>
 <body>
 <table style="text-align: left;" cellpadding="0" cellspacing="0" width="100%" height="100%">
@@ -133,7 +134,7 @@
     refreshRealtimeClock();
     refreshBitcoin();
     setInterval(refreshBitcoin, 120000); // 2 minutes
-    setInterval(refreshTestTrends, 900000); // 15 minutes
+    //setInterval(refreshTestTrends, 900000); // 15 minutes
     setInterval(refreshRealtimeClock, 15000); // 15 second
   }); 
 
