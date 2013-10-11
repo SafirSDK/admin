@@ -139,7 +139,10 @@
   }); 
 
   function refreshBitcoin() { 
-    $.getJSON( "https://api.bitcoinaverage.com/ticker/USD", function( json ) {
+    $.getJSON( "https://api.bitcoinaverage.com/ticker/USD", processBitcoinData );
+  }
+
+  function processBitcoinData(json) {
       var last = json["last"].toFixed(2);
       var ask = json["ask"].toFixed(2);
       var bid = json["bid"].toFixed(2);
@@ -159,7 +162,6 @@
       document.getElementById("btc_24h_price").innerHTML="$ " + a24h;
       document.getElementById("btc_vol").innerHTML="" + vol;
       $("#btc_data").show();
-    });
   }
 
   function refreshTestTrends() { 
@@ -179,7 +181,7 @@
     width -= number.toString().length;
     if ( width > 0 )
     {
-      return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+      return Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ).toString() + number;
     }
     return number + ""; // always return a string
   }
@@ -192,10 +194,10 @@
     return zeroFill(date_obj.getHours(), 2) + ":" + zeroFill(date_obj.getMinutes(), 2);
   }
 
+  var dateNames = Array("söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag");
   function getDayStr(date_obj) {
     // Engelsk datumordning..
-    var dates = Array("söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag");
-    return dates[date_obj.getDay()];
+    return dateNames[date_obj.getDay()];
   }
 
 /**
@@ -245,6 +247,8 @@ return weeknum;
     document.getElementById('rt_week').innerHTML = "v" + x.getWeek();
     document.getElementById('rt_clock_local').innerHTML = getTimeStr(x);
 
+    x = null;
+    utc_date = null;
   }
 
 </script>
