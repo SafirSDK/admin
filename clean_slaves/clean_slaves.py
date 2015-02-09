@@ -26,6 +26,14 @@
 from __future__ import print_function
 import os, sys, shutil, stat, traceback, subprocess, time
 
+#try to import a package that we need for the debian installer
+#this will fail quietly on all other platforms, which is all right.
+try:
+    import apt
+except:
+    pass
+
+
 reboot_needed = False
 
 def write_test_result(expr, name, output):
