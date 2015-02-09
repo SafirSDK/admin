@@ -35,21 +35,7 @@ except:
 
 
 reboot_needed = False
-
-def write_test_result(expr, name, output):
-    with open(name + ".junit.xml","w") as junitfile:
-        junitfile.write("<?xml version=\"1.0\"?>\n<testsuite>\n  <testcase name=\"" + name + "\" classname=\"dose_test\"")
-        if expr:
-            """success"""
-            junitfile.write("/>\n")
-        else:
-            """failure"""
-            junitfile.write(">\n    <error message=\"Failed\">" +
-                            output +
-                            "\n</error>\n  </testcase>\n")
-        junitfile.write("</testsuite>")
-    return expr
-
+exitcode = 0
 
 def delete_workspace():
     def onerror(function, path, excinfo):
@@ -73,8 +59,18 @@ def delete_workspace():
         except Exception as ex:
             exc = e
 
+        #ok, if we're on windows we can try to mark it for removal and reboot
+        if sys.platform == "win32":
+            print("Marking file for deletion on reboot:",path)
+            import ctypes
+            MOVEFILE_DELAY_UNTIL_REBOOT = 4
+            newpath = "\\\\?\\" + os.path.join(os.getcwd(),path)
+            ctypes.windll.kernel32.MoveFileExA(newpath, None,
+                                               MOVEFILE_DELAY_UNTIL_REBOOT)
+            reboot_needed = True
+            return
         print("Failed to delete",path)
-        write_test_result(False, "delete " + path.replace("/","_"), traceback.format_exc(exc))
+        exitcode = 1
 
     BASE = os.environ.get("BASE")
     if BASE is None:
@@ -137,6 +133,7 @@ def main():
 
     if reboot_needed:
         reboot()
-    return 0
+    return
 
-sys.exit(main())
+main()
+sys.exit(exitcode)
