@@ -24,7 +24,7 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, sys, shutil, stat, traceback, subprocess, time
+import os, sys, shutil, stat, traceback, subprocess, time, platform
 
 #try to import a package that we need for the debian installer
 #this will fail quietly on all other platforms, which is all right.
@@ -100,8 +100,10 @@ def delete_workspace():
 def linux_checks():
     lsof = subprocess.check_output(("lsof"))
     if lsof.find("LLL_") != -1:
+        print("Found LLL_ in lsof output")
         reboot_needed = True
     if lsof.find("SAFIR_") != -1:
+        print("Found SAFIR_ in lsof output")
         reboot_needed = True
 
     if platform.linux_distribution()[0] in ("debian", "Ubuntu"):
@@ -110,6 +112,7 @@ def linux_checks():
         uninstall = False
         for p in ("safir-sdk-core", "safir-sdk-core-dev", "safir-sdk-core-testsuite"):
             if cache.has_key(p) and cache[p].is_installed:
+                print(p,"is installed")
                 cmd.append(pkg)
                 uninstall = True
 
