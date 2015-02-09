@@ -73,7 +73,7 @@ def delete_workspace():
         except Exception as ex:
             exc = e
 
-        print("Failed to delete",path))
+        print("Failed to delete",path)
         write_test_result(False, "delete " + path.replace("/","_"), traceback.format_exc(exc))
 
     BASE = os.environ.get("BASE")
