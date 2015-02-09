@@ -24,57 +24,92 @@
 #
 ###############################################################################
 from __future__ import print_function
-import os, sys, shutil, stat
+import os, sys, shutil, stat, traceback, subprocess, time
 
-def onerror(function, path, excinfo):
-    try:
-        # path contains the path of the file that couldn't be removed
-        # let's just assume that it's read-only and unlink it.
-        os.chmod( path, stat.S_IWRITE )
-        os.unlink( path )
-        return
-    except:
-        pass
 
-    #hmm, maybe the path is very long and we're on windows
-    try:
-        if sys.platform == "win32":
-            newpath = "\\\\?\\" + os.path.join(os.getcwd(),path)
-            os.chmod(newpath, stat.S_IWRITE)
-            os.unlink(newpath)
+def write_test_result(expr, name, output):
+    with open(name + ".junit.xml","w") as junitfile:
+        junitfile.write("<?xml version=\"1.0\"?>\n<testsuite>\n  <testcase name=\"" + name + "\" classname=\"dose_test\"")
+        if expr:
+            """success"""
+            junitfile.write("/>\n")
+        else:
+            """failure"""
+            junitfile.write(">\n    <error message=\"Failed\">" +
+                            output +
+                            "\n</error>\n  </testcase>\n")
+        junitfile.write("</testsuite>")
+    return expr
+
+
+def delete_workspace():
+    def onerror(function, path, excinfo):
+        try:
+            # path contains the path of the file that couldn't be removed
+            # let's just assume that it's read-only and unlink it.
+            if os.path.isfile(path):
+                os.chmod(path, stat.S_IWUSR|stat.S_IRUSR)
+            os.unlink( path )
             return
-    except Exception as e:
-        print(" - nope, that didnt work", e)
-    print("Failed to delete",path, ":", excinfo)
+        except Exception as e:
+            exc = e
 
-BASE = os.environ.get("BASE")
-if BASE is None:
-    print("Failed to find Jenkins base directory, trying $HOME/jenkins")
-    HOME = os.environ.get("HOME")
-    if HOME is None:
-        print("HOME environment variable is not set")
+        #hmm, maybe the path is very long and we're on windows
+        try:
+            if sys.platform == "win32":
+                newpath = "\\\\?\\" + os.path.join(os.getcwd(),path)
+                os.chmod(newpath, stat.S_IWRITE)
+                os.unlink(newpath)
+                return
+        except Exception as ex:
+            exc = e
+
+        print("Failed to delete",path))
+        write_test_result(False, "delete " + path.replace("/","_"), traceback.format_exc(exc))
+
+    BASE = os.environ.get("BASE")
+    if BASE is None:
+        print("Failed to find Jenkins base directory, trying $HOME/jenkins")
+        HOME = os.environ.get("HOME")
+        if HOME is None:
+            print("HOME environment variable is not set")
+            sys.exit(1)
+        BASE=os.path.join(HOME,"jenkins")
+
+    if not os.path.isdir(BASE):
+        print(BASE, "does not appear to be a directory")
         sys.exit(1)
-    BASE=os.path.join(HOME,"jenkins")
+    os.chdir(BASE)
+    contents = os.listdir(".")
+    if not os.path.isdir("workspace"):
+        print("Could not find 'workspace' dir in", BASE)
+        sys.exit(1)
 
-if not os.path.isdir(BASE):
-    print(BASE, "does not appear to be a directory")
-    sys.exit(1)
-print("Changing directory to", BASE)
-os.chdir(BASE)
-contents = os.listdir(".")
-print (contents)
-if not os.path.isdir("workspace"):
-    print("Could not find 'workspace' dir in", BASE)
-    sys.exit(1)
+    print("Deleting directory 'workspace' in", BASE)
+    shutil.rmtree("workspace",onerror=onerror)
 
-print("Deleting directory 'workspace' in", BASE)
-shutil.rmtree("workspace",onerror=onerror)
-#for root, dirs, files in os.walk("workspace", topdown=False):
-#    for name in files:
-#        filename = os.path.join(root, name)
-#        os.chmod(filename, stat.S_IWRITE)
-#        os.remove(filename)
-#    for name in dirs:
-#b        os.rmdir(os.path.join(root, name))
-print("Completed")
-sys.exit(0)
+def reboot_needed():
+    if sys.platform == "win32":
+        return False
+    else:
+        lsof = subprocess.check_output(("lsof"))
+        if lsof.find("LLL_"):
+            return True
+        if lsof.find("SAFIR_"):
+            return True
+        return False
+
+def reboot():
+    if sys.platform == "win32":
+        subprocess.call(("shutdown", "-r"))
+    else:
+        subprocess.call(("sudo", "reboot"))
+    time.sleep(60000)
+
+def main():
+    delete_workspace()
+    if reboot_needed():
+        reboot()
+    return 0
+
+sys.exit(main())
