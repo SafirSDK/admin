@@ -39,6 +39,9 @@ exitcode = 0
 
 def delete_workspace():
     def onerror(function, path, excinfo):
+        global reboot_needed
+        global exitcode
+
         try:
             # path contains the path of the file that couldn't be removed
             # let's just assume that it's read-only and unlink it.
@@ -94,6 +97,9 @@ def delete_workspace():
     shutil.rmtree("workspace",onerror=onerror)
 
 def linux_checks():
+    global reboot_needed
+    global exitcode
+
     lsof = subprocess.check_output(("lsof"))
     if lsof.find("LLL_") != -1:
         print("Found LLL_ in lsof output")
@@ -124,6 +130,9 @@ def reboot():
     time.sleep(60000)
 
 def main():
+    global reboot_needed
+    global exitcode
+
     delete_workspace()
 
     if sys.platform == "win32":
