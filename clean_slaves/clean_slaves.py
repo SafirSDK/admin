@@ -26,6 +26,7 @@
 from __future__ import print_function
 import os, sys, shutil, stat, traceback, subprocess, time
 
+reboot_needed = False
 
 def write_test_result(expr, name, output):
     with open(name + ".junit.xml","w") as junitfile:
@@ -88,16 +89,25 @@ def delete_workspace():
     print("Deleting directory 'workspace' in", BASE)
     shutil.rmtree("workspace",onerror=onerror)
 
-def reboot_needed():
-    if sys.platform == "win32":
-        return False
-    else:
-        lsof = subprocess.check_output(("lsof"))
-        if lsof.find("LLL_"):
-            return True
-        if lsof.find("SAFIR_"):
-            return True
-        return False
+def linux_checks():
+    lsof = subprocess.check_output(("lsof"))
+    if lsof.find("LLL_") != -1:
+        reboot_needed = True
+    if lsof.find("SAFIR_") != -1:
+        reboot_needed = True
+
+    if platform.linux_distribution()[0] in ("debian", "Ubuntu"):
+        cmd = ["sudo", "--non-interactive", "apt-get", "--yes", "purge"]
+        cache = apt.cache.Cache()
+        uninstall = False
+        for p in ("safir-sdk-core", "safir-sdk-core-dev", "safir-sdk-core-testsuite"):
+            if cache.has_key(p) and cache[p].is_installed:
+                cmd.append(pkg)
+                uninstall = True
+
+        if uninstall:
+            subprocess.call(cmd)
+
 
 def reboot():
     if sys.platform == "win32":
@@ -108,7 +118,13 @@ def reboot():
 
 def main():
     delete_workspace()
-    if reboot_needed():
+
+    if sys.platform == "win32":
+        pass
+    else:
+        linux_checks()
+
+    if reboot_needed:
         reboot()
     return 0
 
