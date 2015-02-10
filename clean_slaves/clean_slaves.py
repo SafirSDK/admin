@@ -59,7 +59,7 @@ def delete_workspace():
                 os.chmod(newpath, stat.S_IWRITE)
                 os.unlink(newpath)
                 return
-        except Exception as ex:
+        except Exception as e:
             exc = e
 
         #ok, if we're on windows we can try to mark it for removal and reboot
