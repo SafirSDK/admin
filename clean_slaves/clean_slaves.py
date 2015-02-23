@@ -115,7 +115,7 @@ def linux_checks():
         for p in ("safir-sdk-core", "safir-sdk-core-dev", "safir-sdk-core-testsuite"):
             if cache.has_key(p) and cache[p].is_installed:
                 print(p,"is installed")
-                cmd.append(pkg)
+                cmd.append(p)
                 uninstall = True
 
         if uninstall:
