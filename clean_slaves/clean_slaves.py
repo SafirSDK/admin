@@ -33,6 +33,10 @@ try:
 except:
     pass
 
+def log(*args, **kwargs):
+    print(*args, **kwargs)
+    sys.stdout.flush()
+
 
 reboot_needed = False
 exitcode = 0
@@ -64,7 +68,7 @@ def delete_workspace():
 
         #ok, if we're on windows we can try to mark it for removal and reboot
         if sys.platform == "win32":
-            print("Marking file for deletion on reboot:",path)
+            log("Marking file for deletion on reboot:",path)
             import ctypes
             MOVEFILE_DELAY_UNTIL_REBOOT = 4
             newpath = "\\\\?\\" + os.path.join(os.getcwd(),path)
@@ -72,28 +76,28 @@ def delete_workspace():
                                                MOVEFILE_DELAY_UNTIL_REBOOT)
             reboot_needed = True
             return
-        print("Failed to delete",path)
+        log("Failed to delete",path)
         exitcode = 1
 
     BASE = os.environ.get("BASE")
     if BASE is None:
-        print("Failed to find Jenkins base directory, trying $HOME/jenkins")
+        log("Failed to find Jenkins base directory, trying $HOME/jenkins")
         HOME = os.environ.get("HOME")
         if HOME is None:
-            print("HOME environment variable is not set")
+            log("HOME environment variable is not set")
             sys.exit(1)
         BASE=os.path.join(HOME,"jenkins")
 
     if not os.path.isdir(BASE):
-        print(BASE, "does not appear to be a directory")
+        log(BASE, "does not appear to be a directory")
         sys.exit(1)
     os.chdir(BASE)
     contents = os.listdir(".")
     if not os.path.isdir("workspace"):
-        print("Could not find 'workspace' dir in", BASE)
+        log("Could not find 'workspace' dir in", BASE)
         sys.exit(1)
 
-    print("Deleting directory 'workspace' in", BASE)
+    log("Deleting directory 'workspace' in", BASE)
     shutil.rmtree("workspace",onerror=onerror)
 
 def linux_checks():
@@ -103,19 +107,19 @@ def linux_checks():
     lsof = subprocess.check_output(("lsof"))
 
     if lsof.find("LLL_") != -1:
-        print("Found LLL_ in lsof output")
+        log("Found LLL_ in lsof output")
         reboot_needed = True
     if lsof.find("SAFIR_") != -1:
-        print("Found SAFIR_ in lsof output")
+        log("Found SAFIR_ in lsof output")
         reboot_needed = True
     if lsof.find("DOSE_") != -1:
-        print("Found DOSE_ in lsof output")
+        log("Found DOSE_ in lsof output")
         reboot_needed = True
     if lsof.find("DOB_") != -1:
-        print("Found DOB_ in lsof output")
+        log("Found DOB_ in lsof output")
         reboot_needed = True
     if lsof.find("INITIALIZATION_") != -1:
-        print("Found INITIALIZATION_ in lsof output")
+        log("Found INITIALIZATION_ in lsof output")
         reboot_needed = True
 
     if platform.linux_distribution()[0] in ("debian", "Ubuntu"):
@@ -124,7 +128,7 @@ def linux_checks():
         uninstall = False
         for p in ("safir-sdk-core", "safir-sdk-core-dev", "safir-sdk-core-testsuite"):
             if cache.has_key(p) and cache[p].is_installed:
-                print(p,"is installed")
+                log(p,"is installed")
                 cmd.append(p)
                 uninstall = True
 
