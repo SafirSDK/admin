@@ -101,11 +101,21 @@ def linux_checks():
     global exitcode
 
     lsof = subprocess.check_output(("lsof"))
+
     if lsof.find("LLL_") != -1:
         print("Found LLL_ in lsof output")
         reboot_needed = True
     if lsof.find("SAFIR_") != -1:
         print("Found SAFIR_ in lsof output")
+        reboot_needed = True
+    if lsof.find("DOSE_") != -1:
+        print("Found DOSE_ in lsof output")
+        reboot_needed = True
+    if lsof.find("DOB_") != -1:
+        print("Found DOB_ in lsof output")
+        reboot_needed = True
+    if lsof.find("INITIALIZATION_") != -1:
+        print("Found INITIALIZATION_ in lsof output")
         reboot_needed = True
 
     if platform.linux_distribution()[0] in ("debian", "Ubuntu"):
