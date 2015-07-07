@@ -38,7 +38,7 @@ def cmake(f):
         output = subprocess.check_output(("cmake","--version")).decode("utf-8")
         f.write("CMake: " + re.search(r"cmake version (.*)",output).group(1))
     except:
-        f.write("CMake: Not found")
+        f.write("CMake: N/A")
 
 with open("versions.txt","w") as f:
     python(f)
