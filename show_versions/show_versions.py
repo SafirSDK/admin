@@ -36,10 +36,45 @@ def python(f):
 def cmake(f):
     try:
         output = subprocess.check_output(("cmake","--version")).decode("utf-8")
-        f.write("CMake: " + re.search(r"cmake version (.*)",output).group(1))
+        f.write("CMake: " + re.search(r"cmake version (.*)",output).group(1) + "\n")
     except:
-        f.write("CMake: N/A")
+        f.write("CMake: N/A\n")
+
+def subversion(f):
+    try:
+        output = subprocess.check_output(("svn","--version")).decode("utf-8")
+        f.write("Subversion: " + re.search(r"svn, version (.*) ",output).group(1) + "\n")
+    except:
+        f.write("Subversion: N/A\n")
+
+def ninja(f):
+    try:
+        output = subprocess.check_output(("ninja","--version")).decode("utf-8")
+        f.write("Ninja: " + output)
+    except:
+        f.write("Ninja: N/A\n")
+
+
+def java(f):
+    try:
+        output = subprocess.check_output(("java","-version"),stderr=subprocess.STDOUT).decode("utf-8")
+        f.write("Java: " + re.search(r"java version \"(.*)\"",output).group(1) + "\n")
+    except:
+        f.write("Java: N/A\n")
+
+
+def javac(f):
+    try:
+        output = subprocess.check_output(("javac","-version"),stderr=subprocess.STDOUT).decode("utf-8")
+        f.write("Javac: " + re.search(r"javac (.*)",output).group(1) + "\n")
+    except:
+        f.write("Javac: N/A\n")
+
 
 with open("versions.txt","w") as f:
     python(f)
     cmake(f)
+    subversion(f)
+    ninja(f)
+    java(f)
+    javac(f)
