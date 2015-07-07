@@ -49,9 +49,9 @@ def main():
     log (info)
 
     with open("version_summary.xml","w") as f:
-        f.write("<table><tr>\n  <td value=''>\n")
+        f.write("<table><tr>\n  <td value=''/>\n")
         for slave in info:
-            f.write("  <td value='" + slave + "'>\n")
+            f.write("  <td value='" + slave + "'/>\n")
         f.write("</tr>")
 
         try: #get first key in both py2 and 3
@@ -61,9 +61,9 @@ def main():
 
         for sw in info[firstkey]:
             f.write("<tr>\n")
-            f.write("  <td value='" + sw + "'>\n")
+            f.write("  <td value='" + sw + "'/>\n")
             for slave in info:
-                f.write("  <td value='" + info[slave][sw] + "'>\n")
+                f.write("  <td value='" + info[slave][sw] + "'/>\n")
             f.write("</tr>\n")
 
         f.write("</table>")
