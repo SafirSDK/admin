@@ -24,22 +24,22 @@
 #
 ###############################################################################
 from __future__ import print_function
+import sys, subprocess, re
 
 def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
 
+def python(f):
+    f.write("Python: {0}.{1}.{2}\n".format(*sys.version_info))
 
-xml = """<table sorttable="yes">
-  <tr>
-    <td value="Table title" bgcolor="red" fontcolor="black" fontattribute="bold" href="report.xls" align="center" width="200"/>
-    <td value="Column 1" bgcolor="white" fontcolor="black" fontattribute="normal" href="" align="center" width="200"/>
-  </tr>
-  <tr>
-    <td value="Line 1" bgcolor="white" fontcolor="black" fontattribute="normal" href="" align="left" width="200"/>
-    <td value="Value 1" bgcolor="white" fontcolor="black" fontattribute="normal" href="" align="none" width="200"/>
-  </tr>
-</table>"""
+def cmake(f):
+    try:
+        output = subprocess.check_output(("cmake","--version")).decode("utf-8")
+        f.write("CMake: " + re.search(r"cmake version (.*)",output).group(1))
+    except:
+        f.write("CMake: Not found")
 
-with open("test.xml","w") as f:
-    f.write(xml)
+with open("versions.txt","w") as f:
+    python(f)
+    cmake(f)
