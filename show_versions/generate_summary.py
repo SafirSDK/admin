@@ -36,7 +36,11 @@ def main():
     for dir in os.listdir("."):
         if not os.path.isdir(dir):
             continue
-        name = re.match(r"label=(.*)",dir).group(1)
+        match = re.match(r"label=(.*)",dir)
+        if match is None:
+            log("Skipping",dir)
+            continue
+        name = match.group(1)
         info[name] = dict()
         with open(os.path.join(dir,"versions.txt")) as f:
             for line in f:
