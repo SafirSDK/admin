@@ -72,14 +72,14 @@ def javac(f):
 
 def gcc(f):
     try:
-        output = subprocess.check_output(("gcc","--version"),stderr=subprocess.STDOUT).decode("utf-8")
-        f.write("GCC: " + re.search(r"gcc \(GCC\) (.*)",output).group(1).strip() + "\n")
+        output = subprocess.check_output(("gcc","-dumpversion"),stderr=subprocess.STDOUT).decode("utf-8")
+        f.write("GCC: " + output.strip() + "\n")
     except:
         f.write("GCC: N/A\n")
 
 def msvc(f):
     try:
-        output = subprocess.check_output(("cl",),stderr=subprocess.STDOUT).decode("utf-8")
+        output = subprocess.check_output(("cl.exe",),stderr=subprocess.STDOUT).decode("utf-8")
         log(output)
         #f.write("MSVC: " + re.search(r"gcc \(GCC\) (.*)",output).group(1).strip() + "\n")
     except:
