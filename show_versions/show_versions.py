@@ -99,7 +99,10 @@ def mono(f):
 
 def qt(f):
     try:
-        output = subprocess.check_output(("qmake","-version")).decode("utf-8")
+        try:
+            output = subprocess.check_output(("qmake","-version")).decode("utf-8")
+        except:
+            output = subprocess.check_output(("qmake-qt5","-version")).decode("utf-8")
         f.write("Qt: " + re.search(r"Using Qt version ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("Qt: N/A\n")
