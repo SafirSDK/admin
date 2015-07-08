@@ -43,6 +43,7 @@ def cmake(f):
 def subversion(f):
     try:
         output = subprocess.check_output(("svn","--version")).decode("utf-8")
+        log (output)
         f.write("Subversion: " + re.search(r"svn, version ([\.0-9]*) ",output).group(1).strip() + "\n")
     except:
         f.write("Subversion: N/A\n")
@@ -66,6 +67,7 @@ def java(f):
 def javac(f):
     try:
         output = subprocess.check_output(("javac","-version"),stderr=subprocess.STDOUT).decode("utf-8")
+        log (output)
         f.write("Javac: " + re.search(r"javac (.*)",output).group(1).strip() + "\n")
     except:
         f.write("Javac: N/A\n")
