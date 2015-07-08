@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -53,7 +53,10 @@ def main():
 
     with open("version_summary.xml","w") as f:
         f.write("<table><tr>\n  <td value=''/>\n")
-        firstkey = next(iter(info.keys()))
+        try: #get first key in both py2 and 3
+            firstkey = next(info.iterkeys())
+        except:
+            firstkey = next(iter(info.keys()))
 
         for sw in info[firstkey]:
             f.write("  <td value='" + sw + "'/>\n")
