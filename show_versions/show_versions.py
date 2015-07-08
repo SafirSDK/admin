@@ -135,6 +135,20 @@ def boost(f):
         f.write("Boost: N/A\n")
     os.chdir(olddir)
 
+def protobuf(f):
+    olddir = os.getcwd()
+    try:
+        mkdir("protobuf_test")
+        os.chdir("protobuf_test")
+        cm = open("CMakeLists.txt","w")
+        cm.write("project(foo CXX C)\ncmake_minimum_required(VERSION 2.8)\nfind_package(Protobuf)\nexecute_process(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --version)\n")
+        cm.close()
+        output = subprocess.check_output(("cmake",".")).decode("utf-8")
+        f.write("Protobuf: " + re.search(r"libprotoc ([\.0-9]*)",output).group(1).strip() + "\n")
+    except:
+        f.write("Protobuf: N/A\n")
+    os.chdir(olddir)
+
 with open("versions.txt","w") as f:
     python(f)
     cmake(f)
@@ -146,4 +160,5 @@ with open("versions.txt","w") as f:
     qt(f)
     msvc(f)
     boost(f)
+    protobuf(f)
 
