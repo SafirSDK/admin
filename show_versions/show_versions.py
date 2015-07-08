@@ -116,10 +116,23 @@ def msvc(f):
         cm.write("project(foo CXX)\n")
         cm.close()
         output = subprocess.check_output(("cmake",".")).decode("utf-8")
-        log(output)
         f.write("MSVC: " + re.search(r"The CXX compiler identification is MSVC ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("MSVC: N/A\n")
+    os.chdir(olddir)
+
+def boost(f):
+    olddir = os.getcwd()
+    try:
+        mkdir("boost_test")
+        os.chdir("boost_test")
+        cm = open("CMakeLists.txt","w")
+        cm.write("project(foo CXX)\ncmake_minimum_required(VERSION 2.8)\nfind_package(Boost)\n")
+        cm.close()
+        output = subprocess.check_output(("cmake",".")).decode("utf-8")
+        f.write("Boost: " + re.search(r"Boost version: ([\.0-9]*)",output).group(1).strip() + "\n")
+    except:
+        f.write("Boost: N/A\n")
     os.chdir(olddir)
 
 with open("versions.txt","w") as f:
@@ -132,6 +145,5 @@ with open("versions.txt","w") as f:
     mono(f)
     qt(f)
     msvc(f)
-#studio incl sp
-#boost
+    boost(f)
 
