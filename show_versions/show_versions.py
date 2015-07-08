@@ -70,6 +70,21 @@ def javac(f):
     except:
         f.write("Javac: N/A\n")
 
+def gcc(f):
+    try:
+        output = subprocess.check_output(("gcc","--version"),stderr=subprocess.STDOUT).decode("utf-8")
+        f.write("GCC: " + re.search(r"gcc \(GCC\) (.*)",output).group(1).strip() + "\n")
+    except:
+        f.write("GCC: N/A\n")
+
+def msvc(f):
+    try:
+        output = subprocess.check_output(("cl",),stderr=subprocess.STDOUT).decode("utf-8")
+        log(output)
+        #f.write("MSVC: " + re.search(r"gcc \(GCC\) (.*)",output).group(1).strip() + "\n")
+    except:
+        f.write("MSVC: N/A\n")
+
 
 with open("versions.txt","w") as f:
     python(f)
@@ -78,7 +93,8 @@ with open("versions.txt","w") as f:
     ninja(f)
     java(f)
     javac(f)
-    #gcc
+    gcc(f)
+    msvc(f)
 #studio incl sp
 #mono
 #boost
