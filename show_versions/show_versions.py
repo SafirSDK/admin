@@ -109,10 +109,11 @@ def msvc(f):
     try:
         mkdir("msvc_test")
         os.chdir("msvc_test")
-        cm = open("CMakeLists.txt")
+        cm = open("CMakeLists.txt","w")
         cm.write("project(foo CXX)\n")
         cm.close()
         output = subprocess.check_output(("cmake",".")).decode("utf-8")
+        log(output)
         f.write("MSVC: " + re.search(r"The CXX compiler identification is MSVC ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("MSVC: N/A\n")
