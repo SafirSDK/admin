@@ -43,14 +43,14 @@ def cmake(f):
 def subversion(f):
     try:
         output = subprocess.check_output(("svn","--version")).decode("utf-8")
-        f.write("Subversion: " + re.search(r"svn, version (.*) ",output).group(1).strip() + "\n")
+        f.write("Subversion: " + re.search(r"svn, version ([\.0-9]*) ",output).group(1).strip() + "\n")
     except:
         f.write("Subversion: N/A\n")
 
 def ninja(f):
     try:
         output = subprocess.check_output(("ninja","--version")).decode("utf-8").strip()
-        f.write("Ninja: " + output)
+        f.write("Ninja: " + output + "\n")
     except:
         f.write("Ninja: N/A\n")
 
