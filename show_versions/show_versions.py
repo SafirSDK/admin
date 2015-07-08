@@ -30,6 +30,25 @@ def log(*args, **kwargs):
     print(*args, **kwargs)
     sys.stdout.flush()
 
+def mkdir(newdir):
+    """works the way a good mkdir should :)
+        - already exists, silently complete
+        - regular file in the way, raise an exception
+        - parent directory(ies) does not exist, make them as well
+    """
+    if os.path.isdir(newdir):
+        pass
+    elif os.path.isfile(newdir):
+        raise OSError("a file with the same name as the desired " \
+                      "dir, '%s', already exists." % newdir)
+    else:
+        head, tail = os.path.split(newdir)
+        if head and not os.path.isdir(head):
+            mkdir(head)
+        if tail:
+            os.mkdir(newdir)
+
+
 def python(f):
     f.write("Python: {0}.{1}.{2}\n".format(*sys.version_info))
 
@@ -78,6 +97,26 @@ def mono(f):
     except:
         f.write("Mono: N/A\n")
 
+def qt(f):
+    try:
+        output = subprocess.check_output(("qmake","-version")).decode("utf-8")
+        f.write("Qt: " + re.search(r"Using Qt version ([\.0-9]*)",output).group(1).strip() + "\n")
+    except:
+        f.write("Qt: N/A\n")
+
+def msvc(f):
+    olddir = os.getcwd()
+    try:
+        mkdir("msvc_test")
+        os.chdir("msvc_test")
+        cm = open("CMakeLists.txt")
+        cm.write("project(foo CXX)\n")
+        cm.close()
+        output = subprocess.check_output(("cmake",".")).decode("utf-8")
+        f.write("MSVC: " + re.search(r"The CXX compiler identification is MSVC ([\.0-9]*)",output).group(1).strip() + "\n")
+    except:
+        f.write("MSVC: N/A\n")
+    os.chdir(olddir)
 
 with open("versions.txt","w") as f:
     python(f)
@@ -87,7 +126,8 @@ with open("versions.txt","w") as f:
     java(f)
     gcc(f)
     mono(f)
-
+    qt(f)
+    msvc(f)
 #studio incl sp
 #boost
-#qt
+
