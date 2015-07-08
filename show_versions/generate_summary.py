@@ -52,7 +52,7 @@ def main():
     log (info)
 
     with open("version_summary.xml","w") as f:
-        f.write("<table sorttable=\"yes\"><tr>\n  <td value=''/>\n")
+        f.write("<table sorttable=\"yes\"><tr>\n  <td fontattribute='bold' value='Slave'/>\n")
         try: #get first key in both py2 and 3
             firstkey = next(info.iterkeys())
         except:

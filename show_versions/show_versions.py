@@ -71,6 +71,12 @@ def gcc(f):
     except:
         f.write("GCC: N/A\n")
 
+def mono(f):
+    try:
+        output = subprocess.check_output(("mono","--version")).decode("utf-8")
+        f.write("Mono: " + re.search(r"Mono JIT compiler version ([\.0-9]*)",output).group(1).strip() + "\n")
+    except:
+        f.write("Mono: N/A\n")
 
 
 with open("versions.txt","w") as f:
@@ -80,8 +86,8 @@ with open("versions.txt","w") as f:
     ninja(f)
     java(f)
     gcc(f)
+    mono(f)
 
 #studio incl sp
-#mono
 #boost
 #qt
