@@ -43,8 +43,7 @@ def cmake(f):
 def subversion(f):
     try:
         output = subprocess.check_output(("svn","--version")).decode("utf-8")
-        log (output)
-        f.write("Subversion: " + re.search(r"svn, version ([\.0-9]*) ",output).group(1).strip() + "\n")
+        f.write("Subversion: " + re.search(r"svn, version ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("Subversion: N/A\n")
 
@@ -64,13 +63,6 @@ def java(f):
         f.write("Java: N/A\n")
 
 
-def javac(f):
-    try:
-        output = subprocess.check_output(("javac","-version"),stderr=subprocess.STDOUT).decode("utf-8")
-        log (output)
-        f.write("Javac: " + re.search(r"javac (.*)",output).group(1).strip() + "\n")
-    except:
-        f.write("Javac: N/A\n")
 
 def gcc(f):
     try:
@@ -79,13 +71,6 @@ def gcc(f):
     except:
         f.write("GCC: N/A\n")
 
-def msvc(f):
-    try:
-        output = subprocess.check_output(("cl.exe",),stderr=subprocess.STDOUT).decode("utf-8")
-        log(output)
-        #f.write("MSVC: " + re.search(r"gcc \(GCC\) (.*)",output).group(1).strip() + "\n")
-    except:
-        f.write("MSVC: N/A\n")
 
 
 with open("versions.txt","w") as f:
@@ -94,9 +79,8 @@ with open("versions.txt","w") as f:
     subversion(f)
     ninja(f)
     java(f)
-    javac(f)
     gcc(f)
-    msvc(f)
+
 #studio incl sp
 #mono
 #boost
