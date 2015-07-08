@@ -144,6 +144,7 @@ def protobuf(f):
         cm.write("project(foo CXX C)\ncmake_minimum_required(VERSION 2.8)\nfind_package(Protobuf)\nexecute_process(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --version)\n")
         cm.close()
         output = subprocess.check_output(("cmake",".")).decode("utf-8")
+        log(output)
         f.write("Protobuf: " + re.search(r"libprotoc ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("Protobuf: N/A\n")
