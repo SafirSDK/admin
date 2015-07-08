@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -53,19 +53,16 @@ def main():
 
     with open("version_summary.xml","w") as f:
         f.write("<table><tr>\n  <td value=''/>\n")
-        for slave in info:
-            f.write("  <td value='" + slave + "'/>\n")
-        f.write("</tr>")
-
-        try: #get first key in both py2 and 3
-            firstkey = next(info.iterkeys())
-        except:
-            firstkey = next(iter(info.keys()))
+        firstkey = next(iter(info.keys()))
 
         for sw in info[firstkey]:
-            f.write("<tr>\n")
             f.write("  <td value='" + sw + "'/>\n")
-            for slave in info:
+        f.write("</tr>")
+
+        for slave in info:
+            f.write("<tr>\n")
+            f.write("  <td value='" + slave + "'/>\n")
+            for sw in info[slave]:
                 f.write("  <td value='" + info[slave][sw] + "'/>\n")
             f.write("</tr>\n")
 
