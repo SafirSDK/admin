@@ -194,4 +194,6 @@ with open("versions.txt","w") as f:
     doxygen(f)
     graphviz(f)
     nsis(f)
+#msvcrt
+#msvcrtd
 

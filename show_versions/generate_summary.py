@@ -48,25 +48,30 @@ def main():
                 info[name][match.group(1)] = match.group(2)
     log (info)
 
-    with open("version_summary.xml","w") as f:
-        f.write("<table sorttable=\"yes\"><tr>\n  <td fontattribute='bold' value='Slave'/>\n")
+    with open("build_summary.xml","w") as b, open("test_summary.xml","w") as t:
+        b.write("<table sorttable=\"yes\"><tr>\n  <td fontattribute='bold' value='Build Slave'/>\n")
+        t.write("<table sorttable=\"yes\"><tr>\n  <td fontattribute='bold' value='Test Slave'/>\n")
         try: #get first key in both py2 and 3
             firstkey = next(info.iterkeys())
         except:
             firstkey = next(iter(info.keys()))
 
         for sw in info[firstkey]:
-            f.write("  <td fontattribute='bold' value='" + sw + "'/>\n")
-        f.write("</tr>")
+            b.write("  <td fontattribute='bold' value='" + sw + "'/>\n")
+            t.write("  <td fontattribute='bold' value='" + sw + "'/>\n")
+        b.write("</tr>\n")
+        t.write("</tr>\n")
 
         for slave in info:
+            f = b if slave.find("-build") != -1 else t
             f.write("<tr>\n")
             f.write("  <td fontattribute='bold' value='" + slave + "'/>\n")
             for sw in info[slave]:
                 f.write("  <td value='" + info[slave][sw] + "'/>\n")
             f.write("</tr>\n")
 
-        f.write("</table>")
+        b.write("</table>")
+        t.write("</table>")
 
 if __name__ == "__main__":
     sys.exit(main())
