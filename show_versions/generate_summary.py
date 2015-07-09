@@ -36,9 +36,6 @@ def main():
     for dir in os.listdir("."):
         if not os.path.isdir(dir):
             continue
-        #skip non-build machines for the time being
-        if dir.find("-build") == -1:
-            continue
         match = re.match(r"label=(.*)",dir)
         if match is None:
             log("Skipping",dir)
