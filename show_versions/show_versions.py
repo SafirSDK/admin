@@ -171,6 +171,12 @@ def graphviz(f):
     except:
         f.write("Graphviz: N/A\n")
 
+def nsis(f):
+    try:
+        output = subprocess.check_output(("makensis","-version"),stderr=subprocess.STDOUT).decode("utf-8")
+        f.write("NSIS: " + output.strip() + "\n")
+    except:
+        f.write("NSIS: N/A\n")
 
 
 with open("versions.txt","w") as f:
@@ -187,5 +193,5 @@ with open("versions.txt","w") as f:
     protobuf(f)
     doxygen(f)
     graphviz(f)
-#nsis
+    nsis(f)
 
