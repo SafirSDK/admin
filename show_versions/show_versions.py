@@ -151,11 +151,27 @@ def protobuf(f):
         """)
         cm.close()
         output = subprocess.check_output(("cmake",".")).decode("utf-8")
-        log(output)
         f.write("Protobuf: " + re.search(r"libprotoc ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("Protobuf: N/A\n")
     os.chdir(olddir)
+
+def doxygen(f):
+    try:
+        output = subprocess.check_output(("doxygen","--version"),stderr=subprocess.STDOUT).decode("utf-8")
+        f.write("Doxygen: " + output.strip() + "\n")
+    except:
+        f.write("Doxygen: N/A\n")
+
+def graphviz(f):
+    try:
+        output = subprocess.check_output(("dot","-V"),stderr=subprocess.STDOUT).decode("utf-8")
+        log(output)
+        f.write("Graphviz: " + re.search(r"dot - graphviz version ([\.0-9]*)",output).group(1).strip() + "\n")
+    except:
+        f.write("Graphviz: N/A\n")
+
+
 
 with open("versions.txt","w") as f:
     python(f)
@@ -169,4 +185,7 @@ with open("versions.txt","w") as f:
     msvc(f)
     boost(f)
     protobuf(f)
+    doxygen(f)
+    graphviz(f)
+#nsis
 
