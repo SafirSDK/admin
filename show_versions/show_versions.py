@@ -100,7 +100,7 @@ def mono(f):
 def csc(f):
     olddir = os.getcwd()
     try:
-        if sys.platform.startswith("linux")
+        if sys.platform.startswith("linux"):
             raise Exception
         mkdir("csc_test")
         os.chdir("csc_test")
