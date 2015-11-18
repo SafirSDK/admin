@@ -97,31 +97,6 @@ def mono(f):
     except:
         f.write("Mono: N/A\n")
 
-def csc(f):
-    olddir = os.getcwd()
-    try:
-        if sys.platform.startswith("linux"):
-            raise Exception
-        mkdir("csc_test")
-        os.chdir("csc_test")
-        cm = open("CMakeLists.txt","w")
-        cm.write("""project(foo NONE)
-                    cmake_minimum_required(VERSION 2.8)
-                    find_program(CSC NAMES csc)
-                    if (NOT CSC)
-                        message(FATAL_ERROR "Failed to find csc")
-                    endif()
-                    execute_process(COMMAND ${CSC})
-                """)
-        cm.close()
-        output = subprocess.check_output(("cmake",".")).decode("utf-8")
-        log(output)
-        f.write("MS C#: " + re.search(r"Compiler version ([\.0-9]*)",output).group(1).strip() + "\n")
-    except:
-        f.write("MS C#: N/A\n")
-    os.chdir(olddir)
-
-
 def qt(f):
     try:
         try:
@@ -212,7 +187,6 @@ with open("versions.txt","w") as f:
     java(f)
     gcc(f)
     mono(f)
-    csc(f)
     qt(f)
     msvc(f)
     boost(f)
