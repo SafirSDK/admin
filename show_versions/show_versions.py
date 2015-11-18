@@ -112,7 +112,8 @@ def csc(f):
                 """)
         cm.close()
         output = subprocess.check_output(("cmake",".")).decode("utf-8")
-        f.write("MS C#: " + re.search(r"Compiler version: ([\.0-9]*)",output).group(1).strip() + "\n")
+        log(output)
+        f.write("MS C#: " + re.search(r"Compiler version ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("MS C#: N/A\n")
     os.chdir(olddir)
