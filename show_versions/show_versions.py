@@ -105,7 +105,7 @@ def csc(f):
         mkdir("csc_test")
         os.chdir("csc_test")
         cm = open("CMakeLists.txt","w")
-        cm.write("""project(foo None)
+        cm.write("""project(foo NONE)
                     cmake_minimum_required(VERSION 2.8)
                     find_program(CSC NAMES csc)
                     execute_process(COMMAND ${CSC})
