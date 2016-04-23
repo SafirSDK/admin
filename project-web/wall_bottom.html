@@ -149,7 +149,7 @@
   }
 
   function getDateStr(date_obj) {
-    return date_obj.getFullYear() + "-" + zeroFill(date_obj.getMonth(), 2) + "-" + zeroFill(date_obj.getDate(), 2);
+    return date_obj.getFullYear() + "-" + zeroFill(date_obj.getMonth()+1, 2) + "-" + zeroFill(date_obj.getDate(), 2);
   }
 
   function getTimeStr(date_obj) {
