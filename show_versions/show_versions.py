@@ -77,7 +77,7 @@ def ninja(f):
 def java(f):
     try:
         output = subprocess.check_output(("java","-version"),stderr=subprocess.STDOUT).decode("utf-8")
-        f.write("Java: " + re.search(r"java version \"(.*)\"",output).group(1).strip() + "\n")
+        f.write("Java: " + re.search(r"(java|openjdk) version \"([0-9\._]*).*\"",output).group(2).strip() + "\n")
     except:
         f.write("Java: N/A\n")
 
@@ -151,6 +151,7 @@ def protobuf(f):
         """)
         cm.close()
         output = subprocess.check_output(("cmake",".")).decode("utf-8")
+        log("Protobuf output:\n", output)
         f.write("Protobuf: " + re.search(r"libprotoc ([\.0-9]*)",output).group(1).strip() + "\n")
     except:
         f.write("Protobuf: N/A\n")
