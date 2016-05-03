@@ -143,6 +143,13 @@ def protobuf(f):
         cm = open("CMakeLists.txt","w")
         cm.write("""project(foo CXX C)
                     cmake_minimum_required(VERSION 2.8)
+
+                    #this is a workaround for the fact that FindProtobuf in cmake 3.5 does not work on x64 machines
+                    #when not run from a correct command prompt.
+                    if ("$ENV{PROCESSOR_ARCHITECTURE}" STREQUAL "AMD64")
+                        set(_PROTOBUF_ARCH_DIR x64/)
+                    endif()
+
                     if (NOT "$ENV{PROTOBUF_DIR}" STREQUAL "")
                        set (PROTOBUF_SRC_ROOT_FOLDER $ENV{PROTOBUF_DIR})
                     endif()
