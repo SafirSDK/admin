@@ -1,20 +1,19 @@
 #!/bin/bash
 
-read -p "Are you sure? Otherwise press ctr-c."
+read -p "Are you sure? Double check the script! Otherwise press ctr-c."
 
-VERSION=6.3
+VERSION=6.3.7
 
 cd ~/tmp
 
 #raspbian
-#rm -rf tmp tmp.zip
-#wget 
-#"https://connect.consoden.se/safir/view/All/job/Build%20tag/Config=Release,label=debian-jessie-rpi-build/lastSuccessfulBuild/artifact/tmp/*zip*/tmp.zip"
-#unzip tmp.zip
-#cd tmp
-#tar cvfj  safir-sdk-core_$VERSION-1_armhf-raspbian-jessie.debs.tar.bz2 *.deb
-#mv *.tar.bz2 ..
-#cd ..
+rm -rf tmp tmp.zip
+wget "https://connect.consoden.se/safir/view/All/job/Build%20tag/Config=Release,label=debian-jessie-rpi-build/lastSuccessfulBuild/artifact/tmp/*zip*/tmp.zip"
+unzip tmp.zip
+cd tmp
+tar cvfj  safir-sdk-core_$VERSION-1_armhf-raspbian-jessie.debs.tar.bz2 *.deb
+mv *.tar.bz2 ..
+cd ..
 
 #14.04 32
 rm -rf tmp tmp.zip
