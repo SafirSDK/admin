@@ -101,15 +101,15 @@
   }); 
 
   function refreshBitcoin() { 
-    $.getJSON( "https://api.bitcoinaverage.com/ticker/USD", processBitcoinData );
+    $.getJSON( "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTCUSD", processBitcoinData );
   }
 
   function processBitcoinData(json) {
       var last = json["last"].toFixed(2);
       var ask = json["ask"].toFixed(2);
       var bid = json["bid"].toFixed(2);
-      var a24h = json["24h_avg"].toFixed(2);
-      var vol = json["total_vol"].toFixed(2);
+      var a24h = json["averages"].day.toFixed(2);
+      var vol = json["volume"].toFixed(2);
 
       if (last >= a24h) {
         // Up trend
