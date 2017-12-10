@@ -46,10 +46,6 @@ def delete_workspace():
         global reboot_needed
         global exitcode
 
-        #kill some processes..
-        if sys.platform == "win32":
-            subprocess.call("taskkill /f /im cl.exe")
-
         try:
             # path contains the path of the file that couldn't be removed
             # let's just assume that it's read-only and unlink it.
@@ -82,6 +78,10 @@ def delete_workspace():
             return
         log("Failed to delete",path)
         exitcode = 1
+
+    #kill some processes..
+    if sys.platform == "win32":
+        subprocess.call("taskkill /f /im cl.exe")
 
     BASE = os.environ.get("BASE")
     if BASE is None:
